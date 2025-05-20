@@ -1,16 +1,14 @@
-# TCP client
+# UDP client
 
-通过HTTP GET请求控制板子开关灯代码示例
+在板子录音后将音频数据利用UDP发送到服务器的代码示例。
 
-This code example demonstrates the implementation of a TCP client with PSoC&trade; 6 MCU with AIROC&trade; CYW43xxx Wi-Fi & Bluetooth&reg; combo chips. This example establishes a connection with a remote TCP server based on the command received from the TCP server, which turns the user LED ON or OFF. Additionally, this code example can be configured to bring up the Wi-Fi device either in STA interface or Soft AP interface mode.
+This code example demonstrates the implementation of a UDP client with PSoC&trade; 6 MCU and AIROC&trade; CYW43xxx Wi-Fi & Bluetooth&reg; connectivity devices. The example establishes a connection with a remote UDP server, and based on the command received from the UDP server, turns the user LED ON or OFF.
 
-This example uses the Wi-Fi Core FreeRTOS lwIP mbedtls library of the SDK. This library enables application development based on Wi-Fi by pulling wifi-connection-manager, FreeRTOS, lwIP, mbed TLS, secure sockets, and other dependent modules. The secure sockets library provides an easy-to-use API by abstracting the network stack (lwIP) and the security stack (mbed TLS).
+This example uses the Wi-Fi Core FreeRTOS lwIP mbedtls library of the SDK. This library enables application development based on Wi-Fi, by pulling wifi-connection-manager, FreeRTOS, lwIP, mbed TLS, secure sockets and other dependent modules. The secure sockets library provides an easy-to-use API by abstracting the network stack (lwIP) and the security stack (mbed TLS).
 
-This example can be modified to use ThreadX and NetX Duo instead of FreeRTOS and lwIP. See the [Design and implementation](#design-and-implementation) section for more details.
+[View this README on GitHub.](https://github.com/Infineon/mtb-example-wifi-udp-client)
 
-[View this README on GitHub.](https://github.com/Infineon/mtb-example-wifi-tcp-client)
-
-[Provide feedback on this code example.](https://cypress.co1.qualtrics.com/jfe/form/SV_1NTns53sK2yiljn?Q_EED=eyJVbmlxdWUgRG9jIElkIjoiQ0UyMjkxMTIiLCJTcGVjIE51bWJlciI6IjAwMi0yOTExMiIsIkRvYyBUaXRsZSI6IlRDUCBjbGllbnQiLCJyaWQiOiJwYXRoaXN1ZGhhcnMiLCJEb2MgdmVyc2lvbiI6IjQuMi4wIiwiRG9jIExhbmd1YWdlIjoiRW5nbGlzaCIsIkRvYyBEaXZpc2lvbiI6Ik1DRCIsIkRvYyBCVSI6IklDVyIsIkRvYyBGYW1pbHkiOiJQU09DIn0=)
+[Provide feedback on this code example.](https://cypress.co1.qualtrics.com/jfe/form/SV_1NTns53sK2yiljn?Q_EED=eyJVbmlxdWUgRG9jIElkIjoiQ0UyMzA0MzciLCJTcGVjIE51bWJlciI6IjAwMi0zMDQzNyIsIkRvYyBUaXRsZSI6IlVEUCBjbGllbnQiLCJyaWQiOiJuYW5qdW5ndWRzdXIiLCJEb2MgdmVyc2lvbiI6IjQuMi4wIiwiRG9jIExhbmd1YWdlIjoiRW5nbGlzaCIsIkRvYyBEaXZpc2lvbiI6Ik1DRCIsIkRvYyBCVSI6IklDVyIsIkRvYyBGYW1pbHkiOiJQU09DIn0=)
 
 
 ## Requirements
@@ -26,29 +24,32 @@ This example can be modified to use ThreadX and NetX Duo instead of FreeRTOS and
 - Arm&reg; Compiler v6.16 (`ARM`)
 - IAR C/C++ Compiler v9.30.1 (`IAR`)
 
+
 ## Supported kits (make variable 'TARGET')
 
-- [PSoC&trade; 6 Wi-Fi Bluetooth&reg; Prototyping Kit](https://www.infineon.com/CY8CPROTO-062-4343W) (`CY8CPROTO-062-4343W`) – Default value of `TARGET`
-- [PSoC&trade; 6 Wi-Fi Bluetooth&reg; Pioneer Kit](https://www.infineon.com/CY8CKIT-062-WIFI-BT) (`CY8CKIT-062-WIFI-BT`)
-- [PSoC&trade; 62S2 Wi-Fi Bluetooth&reg; Pioneer Kit](https://www.infineon.com/CY8CKIT-062S2-43012) (`CY8CKIT-062S2-43012`)
-- [PSoC&trade; 62S1 Wi-Fi Bluetooth&reg; Pioneer Kit](https://www.infineon.com/CYW9P62S1-43438EVB-01) (`CYW9P62S1-43438EVB-01`)
-- [PSoC&trade; 62S1 Wi-Fi Bluetooth&reg; Pioneer Kit](https://www.infineon.com/CYW9P62S1-43012EVB-01) (`CYW9P62S1-43012EVB-01`)
-- [PSoC&trade; 62S3 Wi-Fi Bluetooth&reg; Prototyping Kit](https://www.infineon.com/CY8CPROTO-062S3-4343W) (`CY8CPROTO-062S3-4343W`)
-- [PSoC&trade; 64 "Secure Boot" Wi-Fi Bluetooth&reg; Pioneer Kit](https://www.infineon.com/CY8CKIT-064B0S2-4343W) (`CY8CKIT-064B0S2-4343W`)
-- [PSoC&trade; 62S2 Evaluation Kit](https://www.infineon.com/CY8CEVAL-062S2) (`CY8CEVAL-062S2-LAI-4373M2`, `CY8CEVAL-062S2-MUR-43439M2`,`CY8CEVAL-062S2-CYW43022CUB` , `CY8CEVAL-062S2-CYW955513SDM2WLIPA`)
+- [PSoC&trade; 6 Wi-Fi Bluetooth&reg; prototyping kit](https://www.infineon.com/CY8CPROTO-062-4343W) (`CY8CPROTO-062-4343W`) – Default value of `TARGET`
+- [PSoC&trade; 6 Wi-Fi Bluetooth&reg; pioneer kit](https://www.infineon.com/CY8CKIT-062-WIFI-BT) (`CY8CKIT-062-WIFI-BT`)
+- [PSoC&trade; 62S2 Wi-Fi Bluetooth&reg; pioneer kit](https://www.infineon.com/CY8CKIT-062S2-43012) (`CY8CKIT-062S2-43012`)
+- [PSoC&trade; 62S1 Wi-Fi Bluetooth&reg; pioneer kit](https://www.infineon.com/CYW9P62S1-43438EVB-01) (`CYW9P62S1-43438EVB-01`)
+- [PSoC&trade; 62S1 Wi-Fi Bluetooth&reg; pioneer kit](https://www.infineon.com/CYW9P62S1-43012EVB-01) (`CYW9P62S1-43012EVB-01`)
+- [PSoC&trade; 62S3 Wi-Fi Bluetooth&reg; prototyping kit](https://www.infineon.com/CY8CPROTO-062S3-4343W) (`CY8CPROTO-062S3-4343W`)
+- [PSoC&trade; 64 "Secure Boot" Wi-Fi Bluetooth&reg; pioneer kit](https://www.infineon.com/CY8CKIT-064B0S2-4343W) (`CY8CKIT-064B0S2-4343W`)
+- [PSoC&trade; 62S2 evaluation kit](https://www.infineon.com/CY8CEVAL-062S2) (`CY8CEVAL-062S2-LAI-4373M2`, `CY8CEVAL-062S2-MUR-43439M2`,`CY8CEVAL-062S2-CYW43022CUB`, `CY8CEVAL-062S2-CYW955513SDM2WLIPA`)
+- CYSBSYSKIT-01 Rapid IoT connect platform RP01 feather kit (`CYSBSYSKIT-01`)
+- Rapid IoT connect developer kit (`CYSBSYSKIT-DEV-01`)
 
 ## Hardware setup
 
 This example uses the board's default configuration. See the kit user guide to ensure that the board is configured correctly.
 
-**Note:** The PSoC&trade; 6 Wi-Fi Bluetooth&reg; Pioneer Kit (CY8CKIT-062-WIFI-BT) ships with KitProg2 installed. The ModusToolbox&trade; software requires KitProg3. Before using this code example, make sure that the board is upgraded to KitProg3. The tool and instructions are available in the [Firmware Loader](https://github.com/Infineon/Firmware-loader) GitHub repository. If you do not upgrade, you will see an error like "unable to find CMSIS-DAP device" or "KitProg firmware is out of date".
-
+**Note:** The PSoC&trade; 6 Bluetooth&reg; LE pioneer kit (CY8CKIT-062-BLE) and the PSoC&trade; 6 Wi-Fi Bluetooth&reg; pioneer kit (CY8CKIT-062-WIFI-BT) ship with KitProg2 installed. The ModusToolbox&trade; software requires KitProg3. Before using this code example, make sure that the board is upgraded to KitProg3. The tool and instructions are available in the [Firmware Loader](https://github.com/Infineon/Firmware-loader) GitHub repository. If you do not upgrade, you will see an error like "unable to find CMSIS-DAP device" or "KitProg firmware is out of date".
 
 ## Software setup
 
-1. Install a terminal emulator if you don't have one. Instructions in this document use [Tera Term](https://teratermproject.github.io/index-en.html).
+Install a terminal emulator if you don't have one. Instructions in this document use [Tera Term](https://teratermproject.github.io/index-en.html).
 
-2. Install a Python interpreter if you don't have one. This code example is tested using [Python 3.7.7](https://www.python.org/downloads/release/python-377/).
+- Install a Python interpreter if you don't have one. This code example is tested with [Python 3.7.7](https://www.python.org/downloads/release/python-377/).
+
 
 ## Using the code example
 
@@ -88,10 +89,10 @@ The 'project-creator-cli' tool can be used to create applications from a CLI ter
 
 Use a CLI terminal to invoke the 'project-creator-cli' tool. On Windows, use the command-line 'modus-shell' program provided in the ModusToolbox&trade; installation instead of a standard Windows command-line application. This shell provides access to all ModusToolbox&trade; tools. You can access it by typing "modus-shell" in the search box in the Windows menu. In Linux and macOS, you can use any terminal application.
 
-The following example clones the "[mtb-example-wifi-tcp-client](https://github.com/Infineon/mtb-example-wifi-tcp-client)" application with the desired name "TcpClient" configured for the *CY8CPROTO-062S2-43439* BSP into the specified working directory, *C:/mtb_projects*:
+The following example clones the "[mtb-example-wifi-udp-client](https://github.com/Infineon/mtb-example-wifi-udp-client)" application with the desired name "Udpclient" configured for the *CY8CPROTO-062S2-43439* BSP into the specified working directory, *C:/mtb_projects*:
 
    ```
-   project-creator-cli --board-id CY8CPROTO-062S2-43439 --app-id mtb-example-wifi-tcp-client --user-app-name TcpClient --target-dir "C:/mtb_projects"
+   project-creator-cli --board-id CY8CPROTO-062S2-43439 --app-id mtb-example-wifi-udp-client --user-app-name UdpClient --target-dir "C:/mtb_projects"
    ```
 
 The 'project-creator-cli' tool has the following arguments:
@@ -107,9 +108,11 @@ Argument | Description | Required/optional
 
 </details>
 
+
 ### Open the project
 
 After the project has been created, you can open it in your preferred development environment.
+
 
 <details><summary><b>Eclipse IDE</b></summary>
 
@@ -159,34 +162,52 @@ For more details, see the [ModusToolbox&trade; tools package user guide](https:/
 
 If using a PSoC&trade; 64 "Secure" MCU kit (like CY8CKIT-064B0S2-4343W), the PSoC&trade; 64 device must be provisioned with keys and policies before being programmed. Follow the instructions in the ["Secure Boot" SDK user guide](https://www.infineon.com/dgdlac/Infineon-PSoC_64_Secure_MCU_Secure_Boot_SDK_User_Guide-Software-v07_00-EN.pdf?fileId=8ac78c8c7d0d8da4017d0f8c361a7666) to provision the device. If the kit is already provisioned, copy-paste the keys and policy folder to the application folder.
 
-**Note:**  Use `policy_single_CM0_CM4_smif_swap.json` policy instead of using the default one "policy_single_CM0_CM4_swap.json" to provision CY8CKIT-064B0S2-4343W device.
-
 1. Connect the board to your PC using the provided USB cable through the KitProg3 USB connector.
 
-2. The kit can be configured to run either in the Wi-Fi STA or AP interface modes. Configure the interface mode using the `USE_AP_INTERFACE` macro defined in the *tcp_client.c* file. Based on the desired interface mode, do the following:
+2. Modify the `WIFI_SSID`, `WIFI_PASSWORD`, and `WIFI_SECURITY_TYPE` macros to match the credentials of the Wi-Fi network that you want to connect. These macros are defined in the *udp_client.h* file. Ensure that the Wi-Fi network that you are connecting to is configured as a private network for the proper functioning of this example.
 
-   **Kit in STA mode (default interface):**
+3. Ensure your computer is connected to the same Wi-Fi access point that you have configured in **Step 2**.
 
-   1. Set the `USE_AP_INTERFACE` macro to '0'; default mode.
+4. Determine the computer's IP address.
 
-   2. Modify the `WIFI_SSID`, `WIFI_PASSWORD`, and `WIFI_SECURITY_TYPE` macros to match the Wi-Fi network credentials that you want to connect to in the *tcp_client.c* file. Ensure to configure your connecting Wi-Fi network as a private network for the proper functioning of this example.
+   To determine the IP address, type the following command in the command shell based on your operating system:
 
-   **Kit in AP mode:**
+   - Windows: `ipconfig`
 
-   1. Set the `USE_AP_INTERFACE` macro to '1'.
+   - Linux: `curl ifconfig.me`
 
-   2. (Optional) Update the `SOFTAP_SSID`, `SOFTAP_PASSWORD`, and `SOFTAP_SECURITY_TYPE` as desired.
+   - macOS: `ifconfig |grep inet`
 
-3. Open a terminal program and select the KitProg3 COM port. Set the serial port parameters to 8N1 and 115200 baud.
 
-4. Program the board using one of the following:
+5. Change the `UDP_SERVER_IP_ADDRESS` macro defined in the *udp_client.h* file to match with the computer's IP address. For example, if your computer's IP address is
+   192.168.1.107, update the macro as shown as follows:
+
+   ```
+   #define UDP_SERVER_IP_ADDRESS             MAKE_IPV4_ADDRESS(192, 168, 1, 107)
+   ```
+
+   **Note:** CYSBSYSKIT-01 reserves UDP and TCP port numbers from `49152` to `57343`.
+
+6. Open a terminal program and select the KitProg3 COM port. Set the serial port parameters to 8N1 and 115200 baud.
+
+7. Ensure that the Python interpreter (see [Software setup](#software-setup) is installed on your computer.
+
+8. Open a command shell from the project directory and run the Python UDP server (*udp_server.py*).  In the command shell opened in the project directory, type in the following command:
+
+   ```
+   python udp_server.py
+   ```
+
+   **Note:** Ensure that the firewall settings of your computer allow access to the Python software so that it can communicate with the UDP client. For more details on enabling Python access, see this [community thread](https://community.infineon.com/t5/ModusToolbox-General/CE229112-Enable-Python-access-to-your-WiFi/td-p/214654).
+
+9. Program the board using one of the following:
 
    <details><summary><b>Using Eclipse IDE for ModusToolbox&trade; software</b></summary>
 
       1. Select the application project in the Project Explorer.
 
       2. In the **Quick Panel**, scroll down, and click **\<Application Name> Program (KitProg3_MiniProg4)**.
-         </details>
+   </details>
 
    <details><summary><b>Using CLI</b></summary>
 
@@ -201,152 +222,47 @@ If using a PSoC&trade; 64 "Secure" MCU kit (like CY8CKIT-064B0S2-4343W), the PSo
       ```
    </details>
 
-   **Figure 1. Wi-Fi connectivity status in STA mode**
+10. After programming, the application starts automatically. Confirm that the text shown in **Figure 1** is displayed on the UART terminal. Note that Wi-Fi SSID and the IP address assigned will be different based on the network that you have connected to.
 
-   ![](images/tcp-client-sta-pre-connection.png)
+    **Figure 1. UART terminal showing the Wi-Fi connectivity status**
 
-   <br />
+    ![](images/uart-terminal-output.png)
 
-   **Figure 2. Wi-Fi connectivity status in AP mode**
+11. From the Python UDP server, send the command to turn the LED ON or OFF to the UDP client ('0' to turn the LED OFF and '1' to turn ON). Observe the user LED (CYBSP_USER_LED) turning ON/OFF on the board.
 
-   ![](images/tcp-client-ap-pre-connection.png)
+    **Figure 2. UDP server output**
 
+    ![](images/udp-server-output.png)
 
-5. Connect your PC to the Wi-Fi AP that you have configured in **Step 2**.
+      <br /> 
+        
+    **Figure 3. LED status on UDP client**
 
-   - In STA mode: Connect the PC to the same AP to which the kit is connected.
+    ![](images/udp-client-output.png)
 
-   - In AP mode: Connect the PC to the kit's AP.
-
-6. Open a command shell from the project directory and run the Python TCP server (*tcp_server.py*). Enter the following command:
-
-   ```
-   python tcp_server.py
-   ```
-
-  Note the TCP server's IPv4 address.
-
-   **Note:** Ensure that the firewall settings of your PC allow access to the Python software to communicate with the TCP client. For more details on enabling Python access, see the [community thread](https://community.infineon.com/thread/53662).
-
-   **Figure 3. TCP server IPv4 address**
-
-   ![](images/tcp-server-ip-address.png)
-
-
-7. From the UART terminal, enter the IPv4 address for the TCP server as noted in **Step 6**.
-
-   For example, if the TCP server IPv4 address is 192.168.10.2, then enter the IP address from the UART terminal as shown in **Figure 4** and press the **Enter** key.
-
-   **Figure 4. Entering the IPv4 address from the UART terminal**
-
-   ![](images/uart-terminal-ipv4-input.png)
-
-8. From the Python TCP server, send the command to turn the LED ON or OFF to the TCP client ('0' and '1' to turn the LED OFF and ON respectively). Observe the user LED (CYBSP_USER_LED) turning ON/OFF on the board.
-
-   **Figure 5. TCP server output**
-
-   ![](images/tcp-server-output.png)
-
-   <br />
-
-   **Figure 6. LED status on TCP client STA mode**
-
-   ![](images/tcp-client-sta-post-connection.png)
-
-   <br />
-
-   **Figure 6. LED status on TCP client AP mode**
-
-   ![](images/tcp-client-ap-post-connection.png)
-
-
-**Note:** Instead of using the Python TCP server (*tcp_server.py*), you can use the example [mtb-example-wifi-tcp-server](https://github.com/Infineon/mtb-example-wifi-tcp-server) to run as the TCP server on a second kit. See the code example documentation.
-
+**Note:** Instead of using the Python UDP server (*udp_server.py*), you can use the example [mtb-example-udp-server](https://github.com/Infineon/mtb-example-udp-server) to run as the UDP server on a second kit. See the code example documentation to learn how to use the example. If you are using the example as the server, the IP address (`UDP_SERVER_IP_ADDRESS`) configured in **Step 5** of the [Operation](#operation) section should be that of the IP address assigned to the kit in the example.
 
 ## Debugging
 
-You can debug the example to step through the code. In the IDE, use the **\<Application Name> Debug (KitProg3_MiniProg4)** configuration in the **Quick Panel**. For details, see the "Program and debug" section in the [Eclipse IDE for ModusToolbox&trade; software user guide](https://www.infineon.com/MTBEclipseIDEUserGuide).
+You can debug the example to step through the code. In the IDE, use the **\<Application Name> Debug (KitProg3_MiniProg4)** configuration in the **Quick Panel**. For details, see the "Program and debug" section in the [Eclipse IDE for ModusToolbox&trade; software user guide](https://www.infineon.com/dgdl/Infineon-Eclipse_IDE_for_ModusToolbox_User_Guide_1-UserManual-v01_00-EN.pdf?fileId=8ac78c8c7d718a49017d99bcb86331e8).
 
-**Note:** **(Only while debugging)** On the CM4 CPU, some code in `main()` may execute before the debugger halts at the beginning of `main()`. This means that some code executes twice - once before the debugger stops execution, and again after the debugger resets the program counter to the beginning of `main()`. See [KBA231071](https://community.infineon.com/docs/DOC-21143) to learn about this and for the workaround.
-
+**Note:** **(Only while debugging)** On the CM4 CPU, some code in `main()` may execute before the debugger halts at the beginning of `main()`. This means that some code executes twice – once before the debugger stops execution, and again after the debugger resets the program counter to the beginning of `main()`. See [KBA231071](https://community.infineon.com/t5/Knowledge-Base-Articles/PSoC-6-MCU-Code-in-main-executes-before-the-debugger-halts-at-the-first-line-of/ta-p/253856) to learn about this and for the workaround.
 
 ## Design and implementation
 
 ### Resources and settings
 
-
 **Table 1. Application resources**
 
  Resource  |  Alias/object     |    Purpose
- :------- | :------------    | :-----------
- SDIO (HAL) | sdio_obj | SDIO interface for Wi-Fi connectivity
- UART (HAL) |cy_retarget_io_uart_obj| UART HAL object used by Retarget-IO for the Debug UART port
- LED (BSP) | CYBSP_USER_LED | User LED to show the output
+ :---------| :-------------    | :------------
+ SDIO (HAL) | sdio_obj                | SDIO interface for Wi-Fi connectivity
+ UART (HAL) | cy_retarget_io_uart_obj | UART HAL object used by retarget-io for the debug UART port
+ LED (BSP)  | CYBSP_USER_LED          | User LED to show output
 
-<br />
+This example uses the Arm&reg; Cortex&reg;-M4 (CM4) CPU of PSoC&trade; 6 MCU to execute an RTOS task: UDP Client task. At device reset, the default Cortex&reg;-M0+ (CM0+) application enables the CM4 CPU and configures the CM0+ CPU to go to sleep.
 
-This example uses the Arm&reg; Cortex&reg;-M4 (CM4) CPU of PSoC&trade; 6 MCU to execute an RTOS task: TCP client task. At device reset, the default Cortex&reg;-M0+ (CM0+) application enables the CM4 CPU and configures the CM0+ CPU to go to sleep.
-
-In this example, PSoC&trade; 6 MCU is configured as a TCP client, which establishes a connection with a remote TCP server, and based on the command received from the TCP server, turns the user LED (CYBSP_USER_LED) ON or OFF.
-
-### Using ThreadX and NetX Duo
-
-This code example can be modified to use the ThreadX and NetX Duo instead of the default FreeRTOS and lwIP. All the source and configuration files required by both the RTOSes are already present in their COMPONENT_* folders. By default, the FreeRTOS and lwIP libraries are added as dependencies in this code example. Follow these steps to configure the code example to use ThreadX and NetX Duo instead.
-
-<details><summary><b>Adding ThreadX and NetX Duo libraries</b></summary>
-
-   1. In the **Quick Panel**, scroll down, and click **Library Manger \<version>**.
-   2. In the **Library Manager** window, delete the **wifi-core-freertos-lwip-mbedtls** library. This will delete all the dependent libraries as well.
-   3. Click the **Add Library** button and add the following libraries back. This step requires a bundle repo for ThreadX, NetX Duo, and NetX Secure does not exist.
-      ```
-      abstraction-rtos
-      clib-support
-      connectivity-utilities
-      netxduo-network-interface-integration
-      secure-sockets
-      whd-bsp-integration
-      wifi-connection-manager
-      wifi-host-driver
-      ```
-   4. Click **OK** and **Update**. After the libraries are updated, click **Close**.
-   5. The ThreadX and NetX Duo libraries do not show up in the library manager as these are not distributed by Infineon. Add these libraries manually. To add the ThreadX library, create a file called *threadx.mtb* in the **deps** folder of the code example with the following content:
-   ```
-   https://github.com/azure-rtos/threadx#v6.1.5_rel#$$ASSET_REPO$$/threadx/v6.1.5_rel
-   ```
-   6. To add the NetX Duo library, create a file called *netxduo.mtb* in the **deps** folder with the following content:
-   ```
-   https://github.com/azure-rtos/netxduo#v6.2.0_rel#$$ASSET_REPO$$/netxduo/v6.2.0_rel
-   ```
-   7. From the Terminal window, execute the `make getlibs` command to fetch these libraries.
-
-   </details>
-
-<details><summary><b>Makefile changes</b></summary>
-
-   1. Change the following lines from
-   ```
-   COMPONENTS=FREERTOS
-   ```
-   to
-   ```
-   COMPONENTS=THREADX
-   ```
-</details>
-
-Follow the steps in the [Using the code example](#using-the-code-example) section to run this code example.
-
-**Note:** NetXDuo network stack used with ThreadX does not have the option to dynamically configure the TCP keep alive parameters (interval, count, and idle time). Therefore, the secure sockets `cy_socket_setsockopt` function fails with an error code "CY_RSLT_MODULE_SECURE_SOCKETS_OPTION_NOT_SUPPORTED".
-
-In the code example, you can skip `cy_socket_setsockopt` calls (except CY_SOCKET_SO_TCP_KEEPALIVE_ENABLE) related to TCP keepalive in the ThreadX environment. And you can configure the desired TCP keep alive parameters by changing the following defines in *nx_user.h* file:
-```
-NX_TCP_KEEPALIVE_RETRIES
-NX_TCP_KEEPALIVE_INITIAL
-NX_TCP_KEEPALIVE_RETRY
-```
-
-**Note:** The version of the code example currently supports ThreadX and the NetXDuo network stack in GCC_ARM toolchain only. Support for other toolchains will be added in a future version of the code example.
-
-<br />
+In this example, PSoC&trade; 6 MCU is configured as a UDP client, which establishes a connection with a remote UDP server, and based on the command received from the UDP Server, turns the user LED (CYBSP_USER_LED) ON or OFF.
 
 ## Related resources
 
@@ -366,28 +282,25 @@ Tools  | [Eclipse IDE for ModusToolbox&trade; software](https://www.infineon.com
 
 Infineon provides a wealth of data at www.infineon.com to help you select the right device, and quickly and effectively integrate it into your design.
 
-For PSoC&trade; 6 MCU devices, see [How to design with PSoC&trade; 6 MCU - KBA223067](https://community.infineon.com/docs/DOC-14644) in the Infineon Developer community.
-
+For PSoC&trade; 6 MCU devices, see [How to design with PSoC&trade; 6 MCU - KBA223067](https://community.infineon.com/docs/DOC-14644) in the Infineon community.
 
 ## Document history
 
-Document title: *CE229112* - *TCP client*
+Document title: *CE230437* - *UDP client*
 
  Version | Description of change
  ------- | ---------------------
  1.0.0   | New code example
- 1.1.0   | Updated for ModusToolbox&trade; 2.1 <br />Code updated to use Secure Sockets and Wi-Fi connection manager libraries
- 1.2.0   | Makefile updated to sync with BSP changes <br />Code updated to use binary semaphore
- 2.0.0   | Major update to support ModusToolbox&trade; software v2.2, added support for new kits.<br />Added soft AP Wi-Fi interface mode.<br /> This version is not backward compatible with ModusToolbox&trade; software v2.1.
- 2.1.0   | Added support for new kits
- 2.2.0   | Updated to support FreeRTOS v10.3.1
- 3.0.0   | Major update to support ModusToolbox&trade; v3.0 and BSPs v4.X. This version is not backward compatible with previous versions of ModusToolbox&trade; software
- 3.1.0   | Added support for CY8CKIT-064B0S2-4343W
- 4.0.0   | Updated to use abstraction-rtos to support various RTOS environments
+ 1.1.0   | Updated *udp_server.py* to use localhost by default
+ 2.0.0   | Major update to support ModusToolbox&trade; software v2.2, added support for new kits.<br /> This version is not backward compatible with ModusToolbox&trade; software v2.1.
+ 2.1.0   | Added support for CYSBSYSKIT-01 and CYSBSYSKIT-DEV-01
+ 2.2.0   | Updated to FreeRTOS v10.3.1
+ 2.3.0   | Updated to FreeRTOS v10.4.3 <br /> Added support for new kits
+ 3.0.0   | Updated to support ModusToolbox&trade; software v2.4 <br /> Added support for new kits <br /> Updated the BSPs to v3.X
+ 3.1.0   | Removed target specific macros from the source code
+ 4.0.0   | Major update to support ModusToolbox&trade; v3.0 and BSPs   v4.X. This version is not backward compatible with previous versions of ModusToolbox&trade;
  4.1.0   | Added support for CY8CEVAL-062S2-CYW43022CUB
- 4.2.0   | Added support for CY8CEVAL-062S2-CYW955513SDM2WLIPA
-
-
+ 4.2.0   |  Added support for CY8CEVAL-062S2-CYW955513SDM2WLIPA
 <br />
 
 
@@ -397,4 +310,4 @@ Document title: *CE229112* - *TCP client*
 <br />
 TO THE EXTENT PERMITTED BY APPLICABLE LAW, CYPRESS MAKES NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, WITH REGARD TO THIS DOCUMENT OR ANY SOFTWARE OR ACCOMPANYING HARDWARE, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.  No computing device can be absolutely secure.  Therefore, despite security measures implemented in Cypress hardware or software products, Cypress shall have no liability arising out of any security breach, such as unauthorized access to or use of a Cypress product. CYPRESS DOES NOT REPRESENT, WARRANT, OR GUARANTEE THAT CYPRESS PRODUCTS, OR SYSTEMS CREATED USING CYPRESS PRODUCTS, WILL BE FREE FROM CORRUPTION, ATTACK, VIRUSES, INTERFERENCE, HACKING, DATA LOSS OR THEFT, OR OTHER SECURITY INTRUSION (collectively, "Security Breach").  Cypress disclaims any liability relating to any Security Breach, and you shall and hereby do release Cypress from any claim, damage, or other liability arising from any Security Breach.  In addition, the products described in these materials may contain design defects or errors known as errata which may cause the product to deviate from published specifications. To the extent permitted by applicable law, Cypress reserves the right to make changes to this document without further notice. Cypress does not assume any liability arising out of the application or use of any product or circuit described in this document. Any information provided in this document, including any sample design information or programming code, is provided only for reference purposes.  It is the responsibility of the user of this document to properly design, program, and test the functionality and safety of any application made of this information and any resulting product.  "High-Risk Device" means any device or system whose failure could cause personal injury, death, or property damage.  Examples of High-Risk Devices are weapons, nuclear installations, surgical implants, and other medical devices.  "Critical Component" means any component of a High-Risk Device whose failure to perform can be reasonably expected to cause, directly or indirectly, the failure of the High-Risk Device, or to affect its safety or effectiveness.  Cypress is not liable, in whole or in part, and you shall and hereby do release Cypress from any claim, damage, or other liability arising from any use of a Cypress product as a Critical Component in a High-Risk Device. You shall indemnify and hold Cypress, including its affiliates, and its directors, officers, employees, agents, distributors, and assigns harmless from and against all claims, costs, damages, and expenses, arising out of any claim, including claims for product liability, personal injury or death, or property damage arising from any use of a Cypress product as a Critical Component in a High-Risk Device. Cypress products are not intended or authorized for use as a Critical Component in any High-Risk Device except to the limited extent that (i) Cypress’s published data sheet for the product explicitly states Cypress has qualified the product for use in a specific High-Risk Device, or (ii) Cypress has given you advance written authorization to use the product as a Critical Component in the specific High-Risk Device and you have signed a separate indemnification agreement.
 <br />
-Cypress, the Cypress logo, and combinations thereof, WICED, ModusToolbox, PSoC, CapSense, EZ-USB, F-RAM, and Traveo are trademarks or registered trademarks of Cypress or a subsidiary of Cypress in the United States or in other countries. For a more complete list of Cypress trademarks, visit www.infineon.com. Other names and brands may be claimed as property of their respective owners.
+Cypress, the Cypress logo, and combinations thereof, WICED, ModusToolbox, PSoC, CapSense, EZ-USB, F-RAM, and Traveo are trademarks or registered trademarks of Cypress or a subsidiary of Cypress in the United States or in other countries. For a more complete list of Cypress trademarks, visit cypress.com. Other names and brands may be claimed as property of their respective owners.

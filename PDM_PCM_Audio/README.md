@@ -1,5 +1,7 @@
 # PSoC&trade; 6 MCU: PDM-to-PCM example
 
+利用板子录音代码示例。
+
 This example demonstrates how to use the pulse-density modulation (PDM)/pulse-code modulation (PCM) hardware block in PSoC&trade; 6 MCU with a digital microphone.
 
 
